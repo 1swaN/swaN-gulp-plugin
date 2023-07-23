@@ -1,0 +1,11 @@
+.header{
+    display: flex;
+    background-color: grey;
+    padding: 50px 0;
+    font-size: 38px;
+    text-align: center;
+
+    @media(max-width: 1200px){
+        font-size: 26px;
+    };
+}
