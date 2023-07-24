@@ -2,11 +2,13 @@ const gulp = require('gulp')
 // html
 const fileInclude = require('gulp-file-include')
 const htmlclean = require('gulp-htmlclean')
+const webpHTML = require('gulp-webp-html')
 // sass
 const sass = require('gulp-sass')(require('sass'))
 const sassGlob = require('gulp-sass-glob')
 const csso = require('gulp-csso')
 const autoprefixer = require('gulp-autoprefixer')
+const webpCSS = require('gulp-webp-css')
 
 const server = require('gulp-server-livereload')
 const clean = require('gulp-clean')
@@ -17,7 +19,10 @@ const plumber = require('gulp-plumber')
 const notify = require('gulp-notify')
 const webpack = require('webpack-stream')
 const babel = require('gulp-babel')
+// images
 const imagemin = require('gulp-imagemin')
+const webp = require('gulp-webp')
+
 const changed = require('gulp-changed')
 
 
@@ -35,15 +40,20 @@ const plumberNotify = (title) =>{
 }
 
 
+const fileIncludeSettings = () =>{
+    return{
+        prefix: '@@',
+        basepath: '@file',
+    }
+}
+
 gulp.task('html:docs', function(){
     return gulp
         .src(['./src/html/**/*.html', '!./src/html/blocks/*.html'])
         .pipe(changed('./docs/'))
         .pipe(plumber(plumberNotify('HTML')))
-        .pipe(fileInclude({
-            prefix: '@@',
-            basepath: '@file'
-        }))
+        .pipe(fileInclude(fileIncludeSettings))
+        .pipe(webpHTML())
         .pipe(htmlclean())
         .pipe(gulp.dest('./docs/'))
 });
@@ -57,6 +67,7 @@ gulp.task('sass:docs', function(){
         .pipe(sourceMaps.init())
         .pipe(autoprefixer())
         .pipe(sassGlob())
+        .pipe(webpCSS())
         .pipe(groupMedia())
         .pipe(sass())
         .pipe(csso())
@@ -66,6 +77,11 @@ gulp.task('sass:docs', function(){
 
 gulp.task('images:docs', function(){
     return gulp.src('./src/images/**/*')
+        .pipe(changed('./docs/img/'))
+        .pipe(webp())
+        .pipe(gulp.dest('./docs/img/'))
+
+        .pipe(gulp.src('./src/images/**/*'))
         .pipe(changed('./docs/img/'))
         .pipe(imagemin({verbose: true}))
         .pipe(gulp.dest('./docs/img/'))
