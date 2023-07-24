@@ -1,11 +1,10 @@
-@import './blocks/*.scss'
+/* Base */
+@import "./base/reset";
+@import "./base/vars";
+@import "./base/base";
+@import "./base/utils";
+@import "./base/containers";
+@import "./base/sticky-footer";
 
-
-*{
-    box-sizing: border-box;
-}
-
-body{
-    background-image: url(./../img/01.png);
-    background-size: cover;
-}
+/* Blocks */
+@import "./blocks/*.scss";
